@@ -20,4 +20,5 @@ cd main
 python attackk22.py --use_org_node_attr --save_clean_model --save_bkd_model
 ```
 ## Cite
-Please cite our paper if it is helpful in your own work.
+Please cite our paper if it is helpful in your own work:
+Stealthy Yet Effective: Distribution-Preserving Backdoor Attacks on Graph Classification
