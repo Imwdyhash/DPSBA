@@ -1,0 +1,29 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# ===== 大数据集 / 模型文件（不纳入版本控制）=====
+dataset/
+save/
+*.zip
+*.t5
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.hdf5
+*.npy
+*.npz
+
+# ===== IDE / 系统 =====
+.idea/
+.vscode/settings.json
+.DS_Store
+Thumbs.db

@@ -311,9 +311,20 @@ class GraphBackdoor:
                                                             args.alpha2) + args.chose + '_' + args.pos + '_' + str(
                                                             args.bkd_gratio_train) + '_' + str(bi_step))
                         print('bkddata is saved at', bkd_path)
-                        torch.save({'bkd_dr_train': bkd_dr_train, 'bkd_gids_train': bkd_gids_train,
-                                    'benign_dr': self.benign_dr,
-                                    'bkd_dr_test': bkd_dr_test, 'bkd_gids_test': bkd_gids_test, 'pset': pset}, bkd_path)
+                        # 精简保存：原代码一次性保存三个完整 DataReader（含全部 4337 张图）
+                        # 导致 MemoryError。AUC 检测只需「后门图 + 干净图」两组图级数据，
+                        # 改为只存必要字段。
+                        clean_gids = list(set(self.benign_dr.data['splits']['train']) - set(bkd_gids_train))
+                        clean_gids = clean_gids[:len(bkd_gids_train)]
+                        auc_data = {
+                            'bkd_gids': list(bkd_gids_train),
+                            'clean_gids': clean_gids,
+                            'bkd_adj': [np.array(bkd_dr_train.data['adj_list'][g]) for g in bkd_gids_train],
+                            'bkd_feat': [np.array(bkd_dr_train.data['features'][g]) for g in bkd_gids_train],
+                            'clean_adj': [np.array(self.benign_dr.data['adj_list'][g]) for g in clean_gids],
+                            'clean_feat': [np.array(self.benign_dr.data['features'][g]) for g in clean_gids],
+                        }
+                        torch.save(auc_data, bkd_path)
                         # torch.save({'bkd_dr_test': bkd_dr_test, 'bkd_gids_test': bkd_gids_test,
                         #             'bkd_nid_groups_test': bkd_nid_groups_test}, bkd_path)
 

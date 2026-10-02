@@ -74,7 +74,14 @@ def select_cdd_graphs(args, data: list, adj_list: list, subset: str,labels:list,
 
     if args.chose!='random':#如果不是随机选样本 而是根据置信度或者loss选
         if args.cleanlabel == 0:#是否区分clean_label 不区分就随便选
-            return sorted_ids[:bkd_num]
+            # 修复：跳过节点数小于触发器大小的图，避免 candidate graph too small
+            picked = []
+            for gid in sorted_ids:
+                if len(picked) >= bkd_num:
+                    break
+                if graph_sizes[gid] >= args.bkd_size * args.bkd_num_pergraph:
+                    picked.append(gid)
+            return picked
         else:
             picked_ids = []
             #print('according to con', sorted_ids)
